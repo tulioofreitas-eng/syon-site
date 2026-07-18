@@ -1,0 +1,91 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+<Layout
+  title="Projeto Alvin — Syon Incorporações"
+  description="Projeto Alvin — torre residencial e comercial de alto padrão em Balneário Camboriú, pela Syon Incorporações."
+  active="empreendimentos"
+>
+
+<section class="page-header">
+  <div class="wrap">
+    <span class="eyebrow">Balneário Camboriú, SC</span>
+    <h1>Projeto Alvin</h1>
+    <p>Torre residencial e comercial de alto padrão, com unidades e salas comerciais integradas — engenharia e execução do próprio grupo.</p>
+  </div>
+</section>
+
+<section class="progresso-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Acompanhamento</span>
+      <h2>Andamento da obra.</h2>
+    </div>
+
+    <div id="progresso-carregando" style="color:var(--cinza-600); font-size:0.95rem;">Carregando...</div>
+    <div id="progresso-vazio" class="progresso-vazio" style="display:none;">
+      Obra ainda não iniciada. Assim que as etapas começarem, o andamento aparece aqui em tempo real.
+    </div>
+    <div id="progresso-lista" class="progresso-lista" style="display:none;"></div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <span class="eyebrow">Interesse</span>
+    <h2>Quer saber mais sobre o Projeto Alvin?</h2>
+    <p>Fale com a Syon — retornamos com plantas, valores e condições.</p>
+    <a href="/contato" class="btn btn-outline-light">Fale conosco</a>
+  </div>
+</section>
+
+</Layout>
+
+<script>
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
+  const SUPABASE_PUBLISHABLE_KEY = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const EMPREENDIMENTO = 'Projeto Alvin';
+
+  async function carregarProgresso() {
+    const carregando = document.getElementById('progresso-carregando');
+    const vazio = document.getElementById('progresso-vazio');
+    const lista = document.getElementById('progresso-lista');
+
+    try {
+      const url = `${SUPABASE_URL}/rest/v1/obra_fases_publicas_status?nome_empreendimento=eq.${encodeURIComponent(EMPREENDIMENTO)}&order=ordem.asc`;
+      const resposta = await fetch(url, {
+        headers: {
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        },
+      });
+      const fases = await resposta.json();
+
+      carregando.style.display = 'none';
+
+      if (!Array.isArray(fases) || fases.length === 0) {
+        vazio.style.display = 'block';
+        return;
+      }
+
+      lista.innerHTML = fases
+        .map(
+          (fase: any) => `
+        <div class="progresso-fase">
+          <span class="nome">${fase.nome_fase}</span>
+          <div class="progresso-barra"><div class="preenchido" style="width:${fase.percentual_concluido}%"></div></div>
+          <span class="percentual">${fase.percentual_concluido}%</span>
+        </div>
+      `,
+        )
+        .join('');
+      lista.style.display = 'flex';
+      lista.style.flexDirection = 'column';
+    } catch {
+      carregando.style.display = 'none';
+      vazio.style.display = 'block';
+    }
+  }
+
+  carregarProgresso();
+</script>

@@ -1,0 +1,121 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout
+  title="Contato — Syon Incorporações"
+  description="Fale com a Syon Incorporações sobre nossos empreendimentos."
+  active="contato"
+>
+
+<section class="page-header">
+  <div class="wrap">
+    <span class="eyebrow">Contato</span>
+    <h1>Fale com a Syon.</h1>
+    <p>Conta seu interesse — em um empreendimento específico, ou institucional — e retornamos com as informações certas.</p>
+  </div>
+</section>
+
+<section class="contato-section">
+  <div class="wrap">
+    <div class="contato-grid">
+
+      <div class="contato-info">
+        <h3>Fale diretamente</h3>
+        <div class="contato-linha">
+          <strong>E-mail</strong>
+          <p>contato@syon.example.com.br</p>
+        </div>
+        <div class="contato-linha">
+          <strong>Atuação</strong>
+          <p>Rio de Janeiro e Balneário Camboriú</p>
+        </div>
+      </div>
+
+      <div>
+        <div id="syon-sucesso" style="display:none; text-align:center; padding:50px 20px; border:1px solid var(--cinza-200);">
+          <h3 style="margin-bottom:10px;">Mensagem enviada.</h3>
+          <p>Vamos retornar em breve.</p>
+        </div>
+
+        <form id="form-contato">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nome">Nome</label>
+              <input type="text" id="nome" name="nome" required>
+            </div>
+            <div class="form-group">
+              <label for="telefone">Telefone</label>
+              <input type="tel" id="telefone" name="telefone">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="interesse">Interesse</label>
+              <select id="interesse" name="interesse">
+                <option value="">Selecione</option>
+                <option value="Interesse em unidade">Interesse em unidade</option>
+                <option value="Institucional / investidor">Institucional / investidor</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="empreendimento">Empreendimento</label>
+              <select id="empreendimento" name="empreendimento">
+                <option value="">Não especificado</option>
+                <option value="Projeto Alvin">Projeto Alvin</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="mensagem">Mensagem</label>
+            <textarea id="mensagem" name="mensagem"></textarea>
+          </div>
+          <input type="text" name="site_url" style="position:absolute; left:-9999px;" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit" class="btn btn-primary" id="btn-enviar" style="margin-top:10px;">Enviar</button>
+          <p class="form-note" id="status-envio">Respondemos o mais rápido possível.</p>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</Layout>
+
+<script>
+  const form = document.getElementById('form-contato') as HTMLFormElement;
+  const status = document.getElementById('status-envio') as HTMLParagraphElement;
+  const botao = document.getElementById('btn-enviar') as HTMLButtonElement;
+  const sucesso = document.getElementById('syon-sucesso') as HTMLDivElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const textoOriginal = botao.textContent;
+    botao.disabled = true;
+    botao.textContent = 'Enviando...';
+    status.textContent = '';
+
+    try {
+      const resposta = await fetch('/api/lead', { method: 'POST', body: new FormData(form) });
+      const dados = await resposta.json();
+
+      if (resposta.ok) {
+        form.reset();
+        form.style.display = 'none';
+        sucesso.style.display = 'block';
+      } else {
+        status.textContent = dados.error || 'Não foi possível enviar. Tenta de novo.';
+        botao.disabled = false;
+        botao.textContent = textoOriginal;
+      }
+    } catch {
+      status.textContent = 'Não foi possível enviar. Tenta de novo.';
+      botao.disabled = false;
+      botao.textContent = textoOriginal;
+    }
+  });
+</script>
