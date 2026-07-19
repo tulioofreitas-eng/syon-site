@@ -242,8 +242,36 @@ p { color: var(--cinza-800); }
 .status-badge .ponto { width: 6px; height: 6px; border-radius: 50%; background: var(--preto); }
 
 /* ============================================
-   VITRINE DE PROGRESSO (usada na página de detalhe)
+   TRAÇO SYON — dispositivo de marca
+   (a logo é um traço caligráfico único, feito
+   num movimento só — vira metáfora do processo:
+   sem fragmentação entre projeto e execução)
    ============================================ */
+.traco-section { padding: 110px 0; background: var(--preto); color: var(--branco); overflow: hidden; }
+.traco-conteudo { max-width: 640px; }
+.traco-section .eyebrow { color: var(--cinza-400); }
+.traco-section h2 { color: var(--branco); }
+.traco-section p { color: var(--cinza-200); margin-top: 20px; font-size: 1.05rem; max-width: 55ch; }
+.traco-svg { margin-top: 60px; width: 100%; max-width: 900px; }
+.traco-svg path { stroke: var(--branco); stroke-width: 1.5; fill: none; opacity: 0.85; }
+
+.traco-divisor { width: 100%; height: 60px; overflow: hidden; }
+.traco-divisor svg { width: 100%; height: 100%; }
+.traco-divisor path { stroke: var(--cinza-400); stroke-width: 1; fill: none; }
+
+/* FICHA TÉCNICA — specs do empreendimento */
+.ficha-tecnica {
+  display: flex; flex-wrap: wrap; gap: 22px 32px;
+  margin: 18px 0 24px; padding-top: 18px; border-top: 1px solid var(--cinza-200);
+}
+.ficha-item { display: flex; flex-direction: column; gap: 4px; }
+.ficha-item .valor { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: var(--preto); }
+.ficha-item .rotulo { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cinza-600); }
+
+/* STATUS — variações por fase do empreendimento */
+.status-badge.lancamento .ponto { background: var(--preto); }
+.status-badge.em-obras .ponto { background: var(--cinza-800); }
+.status-badge.entregue .ponto { background: var(--cinza-400); }
 .progresso-section { padding: 90px 0; }
 .progresso-lista { display: flex; flex-direction: column; gap: 0; margin-top: 40px; }
 .progresso-fase {
@@ -404,6 +432,7 @@ p { color: var(--cinza-800); }
   .form-row { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .progresso-fase { grid-template-columns: 120px 1fr 50px; gap: 14px; }
+  .ficha-tecnica { gap: 16px 24px; }
 }
 
 @media (max-width: 640px) {
